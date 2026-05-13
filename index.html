@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Bayswater Master Board</title>
+<!-- Version 3.5 – May 2026 (with Friday Tachanun Rule) -->
+<!-- Cache-busting headers — ensures TV displays latest version -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700;800&family=Suez+One&display=swap');
+  :root {
+    --gold:      #c29d6d;
+    --gold-dark: #7a5e2a;
+    --bg:        #F5F0E8;
+    --box:       #EDE8DF;
+    --box2:      #E4DED4;
+    --text:      #1a1a1a;
+    --dim:       #555;
+  }
+
+  /* FIX: overflow:hidden removed from * — only applied where explicitly needed */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Suez One', 'Arial Hebrew', serif;
+    width: 100vw; height: 100vh; overflow: hidden;
+  }
+
+  /* ── SHAVUOT FLOWER BORDER ────────────────────────────────────────── */
+  #flowerBorderFrame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    background-image: url('https://raw.githubusercontent.com/BerkoDesigns/kahalChassidim/main/Floral%20Frame%20Made%20of%20Pink%20and%20Red%20Roses.jpeg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: none;
+  }
+
+  body.shavuot-mode {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body.shavuot-mode #flowerBorderFrame {
+    display: block;
+  }
+
+  body.shavuot-mode .master-frame {
+    height: calc(100vh - 90px);
+    width: calc(100vw - 90px);
+    margin: 45px;
+    border: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ── SHAVUOT MODE: BLACK TEXT FOR TOP ROW ──────────────────────── */
+  body.shavuot-mode .branding-shul {
+    color: #000000 !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  body.shavuot-mode #ENG_SIDE {
+    color: #000000 !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  body.shavuot-mode #ENG_DATE {
+    color: #000000 !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  body.shavuot-mode #WEATHER {
+    color: #000000 !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  body.shavuot-mode #BSD {
+    color: #000000 !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .master-frame {
+    height: 100vh; width: 100vw;
+    display: flex; flex-direction: column;
+    padding: 5px; gap: 8px;
+    border: 12px solid var(--gold);
+    overflow: hidden;
+  }
+
+  /* ── BRANDING BAR ─────────────────────────────────────────────── */
+  .branding-bar {
+    height: 5.5vh; display: flex; align-items: center;
+    justify-content: center; position: relative;
+    border-bottom: 1px solid #d4cec6; overflow: hidden;
+  }
+  .branding-shul { font-size: 4.2vh; color: var(--gold-dark); font-weight: bold; }
+  #ENG_SIDE {
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+    font-size: 2.5vh; color: var(--gold-dark);
+    font-family: 'Assistant', 'Arial Hebrew', sans-serif;
+    direction: ltr; font-weight: 700; white-space: nowrap;
+  }
+  #WEATHER { color: var(--dim); }
+  #BSD {
+    position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+    font-size: 2.8vh; color: var(--gold-dark);
+    font-family: 'Assistant', 'Arial Hebrew', sans-serif; font-weight: 700;
+  }
+
+  /* ── CLOCK SECTION ───────────────────────────────────────────── */
+  .clock-section {
+    height: 18vh; display: flex;
+    align-items: center; justify-content: space-between;
+    border: 2px solid var(--gold); border-radius: 12px;
+    background: var(--box); padding: 0; overflow: hidden;
+  }
+  .status-stack {
+    flex: 0 0 24vw; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    background: var(--box); overflow: hidden;
+    border-radius: 10px 0 0 10px;
+  }
+  #DAY_LABEL, #DATE_LABEL, #PARSHA_LABEL {
+    font-size: 5.2vh; line-height: 0.9; white-space: nowrap; padding: 0; margin: 0;
+  }
+  #DAY_LABEL   { color: var(--text); }
+  #DATE_LABEL  { color: var(--gold-dark); }
+  #PARSHA_LABEL { color: #000; }
+  .main-clock {
+    flex: 1 1 auto; display: flex;
+    align-items: center; justify-content: center;
+    direction: ltr !important;
+    font-size: 19vh; font-weight: 800;
+    color: var(--text);
+    font-family: 'Assistant', sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    overflow: hidden; min-width: 0;
+    border-left: 1px solid #d4cec6;
+    border-right: 1px solid #d4cec6;
+  }
+  .c-hour { display: inline-block; text-align: right; min-width: 1ch; }
+  .c-unit { display: inline-block; width: 2ch; text-align: center; }
+  .secs { font-size: 0.75em; opacity: 0.75; color: var(--dim); font-weight: 700; margin-left: 1px; }
+  .left-stack {
+    flex: 0 0 26vw; height: 100%;
+    display: flex; align-items: stretch; justify-content: stretch;
+    overflow: hidden; border-radius: 0 10px 10px 0;
+  }
+  .message-box {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 4px 10px;
+  }
+  .teal-box { background: #e0f5f2; color: #1a5c52; }
+  .gold-box  { color: var(--gold-dark); background: var(--box); }
+  #status-head { font-size: 6.2vh; line-height: 1.0; display: block; width: 100%; }
+  #status-sub  { font-size: 3.2vh; color: #000; display: block; width: 100%; white-space: normal; line-height: 1.0; }
+  #status-kl   { font-size: 3.0vh; color: #1a7a50; display: block; width: 100%; line-height: 1.0; }
+
+  /* ── MAIN BODY ───────────────────────────────────────────────── */
+  .main-body { height: 70vh; display: flex; gap: 10px; overflow: hidden; }
+  .zemanim-col {
+    width: 23vw; border: 2px solid var(--gold); border-radius: 10px;
+    display: flex; flex-direction: column; padding: 2px;
+    background: var(--box); overflow: hidden;
+  }
+  .z-row {
+    display: flex; justify-content: space-between;
+    padding: 0px 8px; border-bottom: 1px solid #d4cec6;
+    align-items: center; flex: 1; overflow: hidden;
+  }
+  .z-label { color: var(--gold-dark); font-size: 3.6vh; }
+  .z-time  { color: var(--text); font-size: 3.2vh; font-family: 'Assistant', sans-serif; font-weight: 700; direction: ltr; }
+  .active-zman { background: var(--gold) !important; }
+  .active-zman .z-label, .active-zman .z-time { color: #000 !important; }
+
+  /* RULE 11: Candle lighting row — light teal matches status box */
+  #row_special { background: #e0f5f2 !important; }
+  #row_special .z-label { color: #1a5c52 !important; }
+  #row_special .z-time  { color: #1a5c52 !important; }
+
+  /* Rabbeinu Tam row — no special background */
+  #r11 { background: var(--box); }
+
+  .content-col { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .data-box {
+    flex: 1.2; border: 2px solid var(--gold); border-radius: 10px;
+    background: var(--box); display: flex; align-items: center;
+    justify-content: center; text-align: center; padding: 8px 12px; overflow: hidden;
+  }
+  .data-box span { font-weight: 400; font-size: 4.8vh; line-height: 1.1; display: block; width: 100%; word-wrap: break-word; color: var(--text); }
+  .img-box {
+    flex: 1.5; border: 2px solid var(--gold); border-radius: 10px;
+    background: var(--box2); overflow: hidden; position: relative;
+  }
+  .img-box img {
+    width: 100%; height: 100%; object-fit: cover;
+    position: absolute; top: 0; left: 0; transition: opacity 0.8s ease-in-out;
+  }
+  .omer-box {
+    flex: 1.3; border: 2px solid var(--gold); border-radius: 10px;
+    background: #d4eae6; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 4px 6px; text-align: center; overflow: hidden;
+  }
+  #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.0; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; }
+  #O_BECHINA { font-size: 3.5vh; color: #1a4a3a; border-top: 1px solid #a0c8c0; padding-top: 2px; margin-top: 4px; width: 90%; overflow: hidden; }
+
+  #SLEEP_OVERLAY { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 10000; display: none; }
+  #SLEEP_CLOCK { position: absolute; color: #444; font-family: 'Assistant', sans-serif; font-size: 8vh; font-weight: 700; transition: all 2.0s ease-in-out; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<!-- Shavuot Flower Border Frame -->
+<div id="flowerBorderFrame"></div>
+
+<div id="SLEEP_OVERLAY"><div id="SLEEP_CLOCK">00:00:00</div></div>
+
+<div class="master-frame">
+  <div class="branding-bar">
+    <div id="ENG_SIDE"><span id="ENG_DATE"></span><span id="WEATHER"></span></div>
+    <div class="branding-shul">קהל חסידים ד'בעיסוואטער</div>
+    <div id="BSD">בס"ד</div>
+  </div>
+
+  <div class="clock-section">
+    <div class="status-stack">
+      <div id="DAY_LABEL">--</div>
+      <div id="DATE_LABEL" style="color: var(--gold);">--</div>
+      <div id="PARSHA_LABEL">--</div>
+    </div>
+    <div class="main-clock" id="CLOCK">
+      <span class="c-hour">0</span>:<span class="c-unit">00</span>:<span class="c-unit">00</span>
+    </div>
+    <div class="left-stack" id="LEFT_MSG"></div>
+  </div>
+
+  <div class="main-body">
+    <div class="zemanim-col" id="ZMANIM_LIST">
+      <div class="z-row" id="r1"><span class="z-label">עלות השחר</span><span class="z-time" id="z1">--:--</span></div>
+      <div class="z-row" id="r2"><span class="z-label">הנחת תפילין</span><span class="z-time" id="z2">--:--</span></div>
+      <div class="z-row" id="r3"><span class="z-label">נץ החמה</span><span class="z-time" id="z3">--:--</span></div>
+      <div class="z-row" id="r4"><span class="z-label">סוף זק"ש מג"א</span><span class="z-time" id="z4">--:--</span></div>
+      <div class="z-row" id="r5"><span class="z-label">סוף זק"ש גר"א</span><span class="z-time" id="z5">--:--</span></div>
+      <div class="z-row" id="r6"><span class="z-label">סוף זמן תפילה</span><span class="z-time" id="z6">--:--</span></div>
+      <div class="z-row" id="r7"><span class="z-label">חצות היום</span><span class="z-time" id="z7">--:--</span></div>
+      <div class="z-row" id="r8"><span class="z-label">מנחה גדולה</span><span class="z-time" id="z8">--:--</span></div>
+      <div class="z-row" id="r9"><span class="z-label">פלג המנחה</span><span class="z-time" id="z9">--:--</span></div>
+      <!-- RULE 11: shown whenever Col S has a time, teal color, hidden after midnight -->
+      <div class="z-row" id="row_special" style="display:none;">
+        <span class="z-label">הדלקת נרות</span>
+        <span class="z-time" id="z_spec_time">--:--</span>
+      </div>
+      <div class="z-row" id="r10"><span class="z-label">שקיעת החמה</span><span class="z-time" id="z10">--:--</span></div>
+      <div class="z-row" id="r11"><span class="z-label">רבינו תם</span><span class="z-time" id="z11">--:--</span></div>
+    </div>
+
+    <div class="content-col">
+      <div style="height:49%; display:flex; gap:10px;">
+        <div class="data-box" style="flex:1.2;"><span id="ANN">טוען מידע...</span></div>
+        <!-- RULE 12: p1 freezes to Shabbos image on Shabbos/Yom Tov; blank if no image -->
+        <div class="img-box" style="flex:1.5;"><img id="p1" src="" alt=""></div>
+        <div class="data-box" style="flex:1.2;"><span id="TEF">טוען מידע...</span></div>
+      </div>
+      <div style="height:49%; display:flex; gap:10px;">
+        <div class="img-box" style="flex:1.4;"><img id="p4" src="" alt=""></div>
+        <div class="omer-box" id="OMER" style="flex:1.3;">
+          <span id="O2">טוען...</span>
+          <div id="O_BECHINA"></div>
+        </div>
+        <div class="img-box" style="flex:1.4;"><img id="p5" src="" alt=""></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * THE BAYSWATER PROTOCOL — Version 3.5 (14 Rules)  |  May 2026
+ * ─────────────────────────────────────────────────────────────────────
+ * RULE 1   CLOCK           12h format, ticking seconds. Hour hugs colon (no gap on single digit).
+ * RULE 2   MATH            Rabbeinu Tam = Col W (72 min) + 2 min (shul minhag) = 74 min after sunset.
+ *                          Candle lighting = raw Col S value, no adjustment.
+ * RULE 3   FLIP LOGIC      Date/Parsha flips at Alos. Omer flips 25 min before Rabbeinu Tam.
+ * RULE 4   STATUS BOX      Priority: Shabbos > Motzei Shabbos > Motzei YomTov > Col D/Tachanun (before RT only) > Default.
+ *                          After Rabbeinu Tam on weekday: Col D and tachanun override both revert to default.
+ *                          After Rabbeinu Tam on Yom Tov (Col AA=Y): shows מוצאי יום טוב.
+ * RULE 5   NIGHT MODE      1:00 AM – 5:00 AM blackout with jumping floating clock.
+ *                          Admin override available to disable for 24-hour operations or special events.
+ * RULE 6   STAY AWAKE      Night mode disabled on Shavuot (the only night screen does not go blank).
+ * RULE 7   OMER BOX        Hierarchy: Molad (Shabbat morning 9–12:30) > Omer count > Summer/default msg.
+ *                          Col D (holiday text) is ONLY for the status box — never the Omer box.
+ *                          Molad displays ONLY on Saturday 9 AM–12:30 PM, not on weekdays.
+ * RULE 8   HOLIDAY PRIO    Col D overrides Motzei Shabbos and Tachanun labels.
+ * RULE 9   VATODIEINU      Sat night + Col D → "ותודיענו" not "אתה חוננתנו".
+ * RULE 10  KIDDUSH LEVANA  Line 3 of status box, 168h–360h after molad.
+ *                          Suppressed: Shabbos, Yom Tov, Friday, Nine Days (1–9 Av).
+ * RULE 11  CANDLE LIGHTING Teal row in zmanim whenever Col S has a time value.
+ *                          Covers Erev Shabbos, Erev Yom Tov, Yom Tov night candle lighting.
+ *                          Hidden after midnight (next calendar day).
+ * RULE 12  SHABBOS IMAGE   NO rotation on Shabbat/Yom Tov. Display single static image from
+ *                          "shabbos" subfolder in p1 Drive folder (case-sensitive: 'shabbos').
+ *                          If /shabbos folder is empty: show clean blank screen (no image).
+ *                          Shabbos: auto-detected via candle lighting / Rabbeinu Tam times.
+ *                          Yom Tov: detected from Col AA = "Y" ONLY — NOT from holidayText.
+ *                          This prevents Rosh Chodesh, fast days, Chol Hamoed from freezing image.
+ *                          Rotation resumes after Rabbeinu Tam / when Col AA is not "Y".
+ * RULE 13  FRIDAY TACHANUN  Every Friday (Erev Shabbat) display אין אומרים תחנון / ערב שבת קודש.
+ *                          EXCEPTIONS: Yom Tov days (Col AA = "Y"), עשרה בטבת (10th Tevet),
+ *                          or if Col D (holiday text) / Col Z (tachanun override) already set.
+ *                          This is teal-box (no tachanun indicator) before Rabbeinu Tam.
+ * ─────────────────────────────────────────────────────────────────────
+ * MOLED FORMAT (moled sheet Col A, no header):
+ *   "DayName, Month DD, YYYY, H:MM am/pm and X chalakim"
+ *   e.g. "Saturday, May 16, 2026, 6:02 pm and 15 chalakim"
+ * ─────────────────────────────────────────────────────────────────────
+ */
+
+const $ = id => document.getElementById(id);
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjNSAvH290v-6SFkXHJfFHAr8Kh4UlmZxAIQf7-PFFFHWTNOkYDGTggyPz130gG6_Low/exec";
+
+var defaultSummerMsg = "", p1Images = [], p1Index = 0, shabbosPic = "";
+var schedule = {}, moladList = [], lastDateIso = "", currentStatusHTML = "";
+var currentlyHighlightedId = null;
+var p1RotateTimer = null;
+var isShabbosImageActive = false;
+
+// Cached once — avoids querySelectorAll('.z-row') running every 10 seconds
+const allZRows = document.querySelectorAll('.z-row');
+
+const OMER_STRINGS = {
+  1:"יום אחד", 2:"שני ימים", 3:"שלשה ימים", 4:"ארבעה ימים", 5:"חמשה ימים",
+  6:"ששה ימים", 7:"שבוע אחד",
+  8:"שמונה ימים שהם שבוע אחד ויום אחד", 9:"תשעה ימים שהם שבוע אחד ושני ימים",
+  10:"עשרה ימים שהם שבוע אחד ושלשה ימים", 11:"אחד עשר יום שהם שבוע אחד וארבעה ימים",
+  12:"שנים עשר יום שהם שבוע אחד וחמשה ימים", 13:"שלשה עשר יום שהם שבוע אחד וששה ימים",
+  14:"ארבעה עשר יום שהם שני שבועות",
+  15:"חמשה עשר יום שהם שני שבועות ויום אחד", 16:"ששה עשר יום שהם שני שבועות ושני ימים",
+  17:"שבעה עשר יום שהם שני שבועות ושלשה ימים", 18:"שמונה עשר יום שהם שני שבועות וארבעה ימים",
+  19:"תשעה עשר יום שהם שני שבועות וחמשה ימים", 20:"עשרים יום שהם שני שבועות וששה ימים",
+  21:"אחד ועשרים יום שהם שלשה שבועות",
+  22:"שנים ועשרים יום שהם שלשה שבועות ויום אחד", 23:"שלשה ועשרים יום שהם שלשה שבועות ושני ימים",
+  24:"ארבעה ועשרים יום שהם שלשה שבועות ושלשה ימים", 25:"חמשה ועשרים יום שהם שלשה שבועות וארבעה ימים",
+  26:"ששה ועשרים יום שהם שלשה שבועות וחמשה ימים", 27:"שבעה ועשרים יום שהם שלשה שבועות וששה ימים",
+  28:"שמונה ועשרים יום שהם ארבעה שבועות",
+  29:"תשעה ועשרים יום שהם ארבעה שבועות ויום אחד", 30:"שלשים יום שהם ארבעה שבועות ושני ימים",
+  31:"אחד ושלשים יום שהם ארבעה שבועות ושלשה ימים", 32:"שנים ושלשים יום שהם ארבעה שבועות וארבעה ימים",
+  33:"שלשה ושלשים יום שהם ארבעה שבועות וחמשה ימים", 34:"ארבעה ושלשים יום שהם ארבעה שבועות וששה ימים",
+  35:"חמשה ושלשים יום שהם חמשה שבועות",
+  36:"ששה ושלשים יום שהם חמשה שבועות ויום אחד", 37:"שבעה ושלשים יום שהם חמשה שבועות ושני ימים",
+  38:"שמונה ושלשים יום שהם חמשה שבועות ושלשה ימים", 39:"תשעה ושלשים יום שהם חמשה שבועות וארבעה ימים",
+  40:"ארבעים יום שהם חמשה שבועות וחמשה ימים", 41:"אחד וארבעים יום שהם חמשה שבועות וששה ימים",
+  42:"שנים וארבעים יום שהם ששה שבועות",
+  43:"שלשה וארבעים יום שהם ששה שבועות ויום אחד", 44:"ארבעה וארבעים יום שהם ששה שבועות ושני ימים",
+  45:"חמשה וארבעים יום שהם ששה שבועות ושלשה ימים", 46:"ששה וארבעים יום שהם ששה שבועות וארבעה ימים",
+  47:"שבעה וארבעים יום שהם ששה שבועות וחמשה ימים", 48:"שמונה וארבעים יום שהם ששה שבועות וששה ימים",
+  49:"תשעה וארבעים יום שהם שבעה שבועות"
+};
+
+const DAY_MAP = {
+  "Sun":"יום ראשון","Mon":"יום שני","Tue":"יום שלישי","Wed":"יום רביעי",
+  "Thu":"יום חמישי","Fri":"ערב ש\"ק","Sha":"שבת קודש","Sat":"שבת קודש"
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function shiftTime(t, o) {
+    if (!t || t.includes("--")) return "--:--:--";
+    let p = t.split(':'), h = parseInt(p[0]), m = parseInt(p[1]), s = parseInt(p[2]||0);
+    let total = (h*3600) + (m*60) + s + (o * 60);
+    if (total < 0) total += 86400;       // FIX: handle negative wraparound
+    if (total >= 86400) total -= 86400;  // FIX: handle next-day wraparound
+    let nh = Math.floor(total / 3600), nm = Math.floor((total % 3600) / 60), ns = total % 60;
+    if (nh > 12) nh -= 12; if (nh === 0) nh = 12;
+    return nh + ":" + String(nm).padStart(2,'0') + ":" + String(ns).padStart(2,'0');
+}
+function fmtZman(t) {
+    if (!t || t.includes("--")) return "--:--";
+    let c = t.replace(/(AM|PM|am|pm)/g,"").trim(), p = c.split(':');
+    return `${p[0]}:${p[1]}<span class="secs">:${p[2]||"00"}</span>`;
+}
+function getSec(t, pm) {
+    if (!t || t.includes("--")) return 0;
+    let p = t.split(':'), h = parseInt(p[0]), m = parseInt(p[1]), s = parseInt(p[2]||0);
+    if (pm && h < 12) h += 12;
+    return (h*3600) + (m*60) + s;
+}
+function getIso(d) {
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
+}
+function fit(el, vhStart) {
+    if (!el) return;
+    let p = el.parentElement;
+    let vh = vhStart;
+    el.style.fontSize = vh + "vh";
+    // Use offsetHeight for reliable comparison with percentage-height parents
+    while (el.scrollHeight > p.offsetHeight && vh > 1.0) {
+        vh -= 0.15;
+        el.style.fontSize = vh + "vh";
+    }
+}
+
+// ── MOLAD PARSING ─────────────────────────────────────────────────
+function parseMoladEntry(str) {
+    if (!str) return null;
+    try {
+        let withoutDay = str.replace(/^[^,]+,\s*/, "");
+        let parts = withoutDay.match(/^(.+?),\s*(\d+):(\d+)\s*(am|pm)\s+and\s+(\d+)\s+chalakim/i);
+        if (!parts) return null;
+        let hour = parseInt(parts[2]), min = parseInt(parts[3]);
+        let ampm = parts[4].toLowerCase(), chalakim = parseInt(parts[5]);
+        let extraSec = Math.round(chalakim * 10 / 3);
+        if (ampm === "pm" && hour !== 12) hour += 12;
+        if (ampm === "am" && hour === 12) hour = 0;
+        let d = new Date(parts[1].trim() + " " + String(hour).padStart(2,"0") + ":" + String(min).padStart(2,"0") + ":00");
+        if (isNaN(d.getTime())) return null;
+        d.setSeconds(extraSec);
+        return d;
+    } catch(e) { return null; }
+}
+
+// ── KIDDUSH LEVANA (RULE 10) ──────────────────────────────────────
+function getKiddushLevana(now, hebDate, isShab, holidayText, dayOfWeek) {
+    if (isShab) return false;
+    if (holidayText && holidayText.trim() !== "") return false;
+    if (dayOfWeek === 5) return false;
+    if (isNineDays(hebDate)) return false;
+    let nowMs = now.getTime(), bestMolad = null;
+    for (let mol of moladList) {
+        if (mol && mol.getTime() <= nowMs && (!bestMolad || mol.getTime() > bestMolad.getTime()))
+            bestMolad = mol;
+    }
+    if (!bestMolad) return false;
+    let hrs = (nowMs - bestMolad.getTime()) / 3600000;
+    return (hrs >= 168 && hrs < 360);
+}
+function isNineDays(hebDate) {
+    if (!hebDate || !hebDate.includes("אב")) return false;
+    for (let d of ["א'","ב'","ג'","ד'","ה'","ו'","ז'","ח'","ט'"]) {
+        if (hebDate.startsWith(d)) return true;
+    }
+    return false;
+}
+
+// ── HELPER: DETECT עשרה בטבת (10th of Tevet) ────────────────────
+function isEsseraBTevet(hebDate) {
+    // עשרה בטבת is always the 10th of Tevet (never skipped)
+    if (!hebDate) return false;
+    // Look for "י'" (10) followed by "טבת"
+    return hebDate.includes("י'") && hebDate.includes("טבת");
+}
+
+// ── RULE 12: SHABBOS IMAGE ────────────────────────────────────────
+// NO rotation on Shabbat/Yom Tov (Col AA = "Y"). Display single static image from
+// p1/shabbos subfolder (case-sensitive: 'shabbos'). If no image, show blank screen.
+function updateP1Image(isKodesh) {
+    if (isKodesh && !isShabbosImageActive) {
+        // Enter Shabbat/Yom Tov mode: stop rotation, show Shabbos image or blank
+        isShabbosImageActive = true;
+        if (p1RotateTimer) { clearInterval(p1RotateTimer); p1RotateTimer = null; }
+        if (shabbosPic) {
+            $('p1').style.opacity = 0;
+            setTimeout(() => { 
+                $('p1').src = "https://drive.google.com/thumbnail?id=" + shabbosPic + "&sz=w1200"; 
+                $('p1').style.opacity = 1; 
+            }, 800);
+        } else {
+            // No Shabbos image: show blank screen (clean fade out)
+            $('p1').style.opacity = 0;
+            setTimeout(() => { 
+                $('p1').src = ""; 
+                $('p1').style.opacity = 1; 
+            }, 800);
+        }
+    } else if (!isKodesh && isShabbosImageActive) {
+        // Exit Shabbat/Yom Tov mode: resume normal rotation
+        isShabbosImageActive = false;
+        if (p1Images.length > 0 && !p1RotateTimer) {
+            rotateP1();
+            p1RotateTimer = setInterval(rotateP1, 15000);
+        }
+    }
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────
+function updateClock() {
+    let now = new Date(), hh = (now.getHours() % 12 || 12);
+    let mm = String(now.getMinutes()).padStart(2,'0'), ss = String(now.getSeconds()).padStart(2,'0');
+    $('CLOCK').innerHTML = `<span class="c-hour">${hh}</span>:<span class="c-unit">${mm}</span>:<span class="c-unit">${ss}</span>`;
+    $('ENG_DATE').innerText = now.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+}
+
+function loadWeather() {
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=40.598&longitude=-73.765&current_weather=true&temperature_unit=fahrenheit")
+    .then(r => r.json())
+    .then(d => { if (d.current_weather) $('WEATHER').innerText = " | " + Math.round(d.current_weather.temperature) + "°F"; })
+    .catch(err => console.log("Weather error:", err));
+}
+
+function rotateP1() {
+    if (p1Images.length === 0 || isShabbosImageActive) return;
+    $('p1').style.opacity = 0;
+    setTimeout(() => {
+        $('p1').src = "https://drive.google.com/thumbnail?id=" + p1Images[p1Index] + "&sz=w1200";
+        $('p1').style.opacity = 1;
+        p1Index = (p1Index + 1) % p1Images.length;
+    }, 800);
+}
+
+// ── MAIN UI UPDATE ────────────────────────────────────────────────
+function updateUI() {
+    let now = new Date();
+    let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    let cSec = (h*3600) + (m*60) + s;
+    let dToday = schedule[getIso(now)]; if (!dToday) return;
+    let holidayText = dToday.holidayText || "";
+
+    // RULE 5 & 6: Night mode logic
+    let isHolidayStayAwake = holidayText.includes("שבועות");
+    // Optional: Admin override via localStorage
+    // let adminNightModeDisabled = localStorage.getItem('nightModeOverride') === 'true';
+
+    // RULE 5: Sleep 1–5 AM (unless Shavuot or admin override is active)
+    if (!isHolidayStayAwake && h >= 1 && h < 5) {
+        $('SLEEP_OVERLAY').style.display = 'block';
+        $('SLEEP_CLOCK').innerText = (h%12||12) + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+        if (s === 0) {
+            $('SLEEP_CLOCK').style.left = (Math.floor(Math.random()*70)+5) + "vw";
+            $('SLEEP_CLOCK').style.top  = (Math.floor(Math.random()*80)+5) + "vh";
+        }
+        return;
+    } else { $('SLEEP_OVERLAY').style.display = 'none'; }
+
+    // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
+    // Flowers only show on Shavuot (when isHolidayStayAwake is true)
+    if (isHolidayStayAwake) {
+        document.body.classList.add('shavuot-mode');
+    } else {
+        document.body.classList.remove('shavuot-mode');
+    }
+
+    // RULE 3: Flip logic
+    // rtSecs = Rabbeinu Tam time in seconds — Col W + 2 min (shul minhag)
+    let rtSecs = getSec(dToday.z[10], true) + 120;
+    let oIso   = (cSec >= rtSecs - 1500) ? getIso(new Date(now.getTime() + 86400000)) : getIso(now);
+    let dIso   = (cSec < getSec(dToday.z[0], false)) ? getIso(new Date(now.getTime() - 86400000)) : getIso(now);
+    let dOmer  = schedule[oIso] || dToday;
+    let dDate  = schedule[dIso] || dToday;
+
+    if (dIso !== lastDateIso) {
+        lastDateIso = dIso;
+        $('DAY_LABEL').innerText   = DAY_MAP[dDate.day] || dDate.day;
+        $('DATE_LABEL').innerText  = dDate.heb;
+        $('PARSHA_LABEL').innerText = dDate.parsha ? "פרשת " + dDate.parsha : "";
+        for (let i = 1; i <= 11; i++) {
+            let bt = dDate.z[i-1];
+            // RULE 2: Rabbeinu Tam = Col W value + 2 min (shul minhag adds 2 to the 72)
+            $('z'+i).innerHTML = fmtZman((i === 11) ? shiftTime(bt, 2) : bt);
+        }
+    }
+
+    // RULE 11: Candle lighting — show when Col S has value, hide after midnight.
+    // now.getHours() !== 0 is cleaner than cSec > 0 — avoids flicker if browser
+    // clock lags slightly near the midnight boundary.
+    let candleTime = (dToday.candle || "").trim();
+    if (candleTime !== "" && now.getHours() !== 0) {
+        $('row_special').style.display = 'flex';
+        $('z_spec_time').innerHTML = fmtZman(candleTime);
+    } else {
+        $('row_special').style.display = 'none';
+    }
+
+    // RULE 7: Omer box hierarchy (UPDATED v3.5)
+    // Col D (holidayText) is ONLY for the status box — never shown in the Omer box.
+    // Omer box shows: Molad (Shabbat morning 9am-12:30pm only) → Omer count → Summer/default message
+    let moledText   = dDate.moled || "";
+    let isMoledTime = (cSec >= 32400 && cSec <= 45000); // 9 AM – 12:30 PM
+    let isShabbat   = (now.getDay() === 6); // Saturday (day 6)
+    let isMoledDisplay = isMoledTime && isShabbat && moledText !== ""; // Molad ONLY on Shabbat morning
+    let omerKey     = dOmer.omerNum ? String(dOmer.omerNum).trim() : null;
+    let summerMsg   = dOmer.clmF || defaultSummerMsg;
+
+    if (isMoledDisplay) {
+        // 1st: Molad display (Shabbat morning 9am-12:30pm only)
+        $('O2').innerText = moledText; $('O_BECHINA').style.display = 'none'; fit($('O2'), 4.2);
+    } else if (omerKey) {
+        // 2nd: Omer count — always during Sefirah
+        $('O2').innerText = "היום " + (OMER_STRINGS[omerKey] || omerKey + " יום") + " לעומר";
+        if (dOmer.bechina) { $('O_BECHINA').innerText = dOmer.bechina; $('O_BECHINA').style.display = 'block'; }
+        else { $('O_BECHINA').style.display = 'none'; }
+        fit($('O2'), 5.5); fit($('O_BECHINA'), 3.8);
+    } else {
+        // 3rd: Summer/default message
+        $('O2').innerText = summerMsg; $('O_BECHINA').style.display = 'none'; fit($('O2'), 5.5);
+    }
+
+    // RULES 4, 8, 9, 13: Status box
+    let tR    = (dDate.tachReason || "").trim();
+    let hText = (holidayText || "").trim();
+    let dayW  = now.getDay();
+    // Safer candle time → seconds conversion: parse raw, then force PM only if < noon.
+    let candleSecs = getSec(candleTime, false);
+    if (candleSecs < 43200) candleSecs += 43200;
+    let isShab    = (dayW===5 && candleTime && cSec >= candleSecs) || (dayW===6 && cSec < rtSecs);
+    let isYomTov  = (dToday.yomtov === "Y");
+    let isKodesh  = isShab || isYomTov;
+    let isMotz    = (dayW===6 && cSec >= rtSecs);
+    // After Rabbeinu Tam on a weekday — Col D and tachanun no longer show
+    let isPastRT  = (cSec >= rtSecs);
+
+    let head = "", sub = "", cls = "gold-box";
+    if (isShab) {
+        // Shabbos — unchanged
+        head = (moledText && isMoledDisplay) ? "שבת מברכים" : "שבת קודש"; sub = hText;
+    } else if (isMotz) {
+        // Motzei Shabbos — unchanged, Col D + ותודיענו or plain
+        head = hText !== "" ? hText : "מוצאי שבת";
+        sub  = hText !== "" ? "ותודיענו" : "אתה חוננתנו";
+        if (hText !== "") cls = "teal-box";
+    } else if (isYomTov && isPastRT) {
+        // After RT on Yom Tov day (Col AA = Y) → מוצאי יום טוב
+        head = "מוצאי יום טוב"; sub = ""; cls = "gold-box";
+    } else if (hText !== "" && !isPastRT) {
+        // Col D text — only before RT
+        head = hText; sub = tR; cls = "teal-box";
+    } else if (tR !== "" && !isPastRT) {
+        // Tachanun override — only before RT
+        head = "אין אומרים תחנון"; sub = tR; cls = "teal-box";
+    } else if (dayW === 5 && !isYomTov && !isEsseraBTevet(dDate.heb) && !isPastRT) {
+        // RULE 13: Friday (Erev Shabbat) — אין אומרים תחנון / ערב שבת קודש
+        // Shows until candle lighting OR Rabbeinu Tam, whichever comes first
+        // (unless it's Yom Tov or עשרה בטבת - 10th of Tevet)
+        head = "אין אומרים תחנון"; sub = "ערב שבת קודש"; cls = "teal-box";
+    } else {
+        // Default — מוריד הטל / ותן ברכה
+        head = "מוריד הטל"; sub = "ותן ברכה";
+    }
+
+    // RULE 10: Kiddush Levana
+    let showKL = getKiddushLevana(now, dDate.heb || "", isShab, hText, dayW);
+    let klLine = showKL ? `<span id="status-kl">קידוש לבנה</span>` : "";
+    let hasExtra = sub || showKL;
+    let headSize = hasExtra ? 6.2 : 8.5;
+    let sH = `<div class="message-box ${cls}" style="justify-content:${hasExtra ? 'space-evenly' : 'center'}"><span id="status-head" style="font-size:${headSize}vh">${head}</span>${sub ? `<span id="status-sub">${sub}</span>` : ''}${klLine}</div>`;
+    if (sH !== currentStatusHTML) {
+        $('LEFT_MSG').innerHTML = sH; currentStatusHTML = sH;
+        fit(document.getElementById('status-head'), headSize);
+        if (sub) fit(document.getElementById('status-sub'), 3.2);
+        if (showKL) fit(document.getElementById('status-kl'), 3.0);
+    }
+
+    // RULE 12: Shabbos/Yom Tov image freeze
+    updateP1Image(isKodesh);
+
+    // Active zman highlight — uses cached allZRows (not querySelectorAll every 10 sec)
+    let zT = []; for (let i=1; i<=11; i++) zT.push({id:'r'+i, sec: getSec(dDate.z[i-1], i>=7)});
+    let nIdx = zT.findIndex(z => z.sec > cSec), tgtId = nIdx !== -1 ? zT[nIdx].id : null;
+    if (tgtId !== currentlyHighlightedId) {
+        allZRows.forEach(r => r.classList.remove('active-zman'));
+        if (tgtId && $(tgtId)) $(tgtId).classList.add('active-zman');
+        currentlyHighlightedId = tgtId;
+    }
+}
+
+// ── DATA LOAD ─────────────────────────────────────────────────────
+// FAILSAFE: last good data is preserved in localStorage so if Apps Script
+// fails temporarily, the board keeps running on cached values silently.
+// Cache is updated only when a valid response arrives.
+function loadData() {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15-second timeout (increased from 5)
+    
+    fetch(SCRIPT_URL + "?cb=" + new Date().getTime(), { signal: controller.signal })
+    .then(r => r.json())
+    .then(d => {
+        clearTimeout(timeout);
+        if (!d || !d.schedule) return; // ignore empty/broken responses
+        // Save to localStorage as failsafe cache
+        try { localStorage.setItem('bayswater_cache', JSON.stringify(d)); } catch(e) {}
+        applyData(d);
+    })
+    .catch(err => {
+        clearTimeout(timeout);
+        console.log("Data load error (using cache):", err);
+        // On failure, try to restore from last known good cache
+        try {
+            let cached = localStorage.getItem('bayswater_cache');
+            if (cached) applyData(JSON.parse(cached));
+        } catch(e) {}
+    });
+}
+
+// Applies a data payload to the board — called from both live fetch and cache restore
+function applyData(d) {
+    schedule         = d.schedule;
+    defaultSummerMsg = d.defaultMsg || "";
+    shabbosPic       = d.shabbosPic || "";
+    p1Images         = d.p1List || [];
+    if (p1Images.length > 0 && !isShabbosImageActive && !p1RotateTimer) {
+        rotateP1();
+        p1RotateTimer = setInterval(rotateP1, 15000);
+    }
+    $('ANN').innerText = d.announcements || ""; fit($('ANN'), 4.8);
+    $('TEF').innerText = d.tefila || "";        fit($('TEF'), 4.8);
+    if (d.p4) $('p4').src = "https://drive.google.com/thumbnail?id=" + d.p4 + "&sz=w1200";
+    if (d.p5) $('p5').src = "https://drive.google.com/thumbnail?id=" + d.p5 + "&sz=w1200";
+    moladList = [];
+    if (d.moladList && Array.isArray(d.moladList)) {
+        for (let entry of d.moladList) { let p = parseMoladEntry(entry); if (p) moladList.push(p); }
+    }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+// updateClock: every 1 second — only updates the clock digits and date string.
+// updateUI:    every 10 seconds — handles zmanim, status box, Omer, Kiddush Levana,
+//              candle lighting, image freeze, active zman highlight.
+//              10 sec is fast enough to catch any zman transition within 10 seconds,
+//              but 6× lighter than running every second.
+setInterval(updateClock, 1000); updateClock();
+loadWeather(); setInterval(loadWeather, 900000);
+loadData();    setInterval(loadData, 30000);
+setInterval(updateUI, 10000); updateUI();
+</script>
+</body>
+</html>
