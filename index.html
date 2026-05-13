@@ -37,7 +37,7 @@
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    z-index: -1;
+    z-index: 1;
     background-image: url('https://raw.githubusercontent.com/BerkoDesigns/kahalChassidim/main/Floral%20Frame%20Made%20of%20Pink%20and%20Red%20Roses.jpeg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -62,6 +62,8 @@
     margin: 45px;
     border: none;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
   }
 
   /* ── SHAVUOT MODE: BLACK TEXT FOR TOP ROW ──────────────────────── */
@@ -220,7 +222,7 @@
     align-items: center; justify-content: center;
     padding: 4px 6px; text-align: center; overflow: hidden;
   }
-   #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.2; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; }
+  #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.2; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; font-size: 3.8vh; }
   #O_BECHINA { font-size: 3.5vh; color: #1a4a3a; border-top: 1px solid #a0c8c0; padding-top: 2px; margin-top: 4px; width: 90%; overflow: hidden; }
 
   #SLEEP_OVERLAY { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 10000; display: none; }
@@ -537,6 +539,12 @@ function updateUI() {
     // Optional: Admin override via localStorage
     // let adminNightModeDisabled = localStorage.getItem('nightModeOverride') === 'true';
 
+    // SHAVUOT: Display special message in announcements box
+    if (isHolidayStayAwake) {
+        $('ANN').innerText = "🌸 זמן מתן תורתינו 🌸 א פרייליכען יום טוב שבועות 🌺";
+        fit($('ANN'), 3.8);
+    }
+
     // RULE 5: Sleep 1–5 AM (unless Shavuot or admin override is active)
     if (!isHolidayStayAwake && h >= 1 && h < 5) {
         $('SLEEP_OVERLAY').style.display = 'block';
@@ -550,12 +558,11 @@ function updateUI() {
 
     // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
     // Flowers only show on Shavuot (when isHolidayStayAwake is true)
-// TESTING: Always show flower border
-if (isHolidayStayAwake) {
-    document.body.classList.add('shavuot-mode');
-} else {
-    document.body.classList.remove('shavuot-mode');
-}
+    if (isHolidayStayAwake) {
+        document.body.classList.add('shavuot-mode');
+    } else {
+        document.body.classList.remove('shavuot-mode');
+    }
 
     // RULE 3: Flip logic
     // rtSecs = Rabbeinu Tam time in seconds — Col W + 2 min (shul minhag)
