@@ -220,7 +220,7 @@
     align-items: center; justify-content: center;
     padding: 4px 6px; text-align: center; overflow: hidden;
   }
-  #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.0; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; }
+   #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.2; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; font-size: 3.8vh; }
   #O_BECHINA { font-size: 3.5vh; color: #1a4a3a; border-top: 1px solid #a0c8c0; padding-top: 2px; margin-top: 4px; width: 90%; overflow: hidden; }
 
   #SLEEP_OVERLAY { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 10000; display: none; }
@@ -551,7 +551,7 @@ function updateUI() {
     // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
     // Flowers only show on Shavuot (when isHolidayStayAwake is true)
 // TESTING: Always show flower border
-if (true) {
+if (isHolidayStayAwake) {
     document.body.classList.add('shavuot-mode');
 } else {
     document.body.classList.remove('shavuot-mode');
@@ -602,7 +602,7 @@ if (true) {
         // SHAVUOT: Special message with flowers
         $('O2').innerText = "🌸 זמן מתן תורתינו 🌸\nא פרייליכען יום טוב שבועות 🌺";
         $('O_BECHINA').style.display = 'none';
-        fit($('O2'), 4.5);
+        fit($('O2'), 3.5);
     } else if (isMoledDisplay) {
         // 1st: Molad display (Shabbat morning 9am-12:30pm only)
         $('O2').innerText = moledText; $('O_BECHINA').style.display = 'none'; fit($('O2'), 4.2);
