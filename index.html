@@ -537,6 +537,16 @@ function updateUI() {
     // Optional: Admin override via localStorage
     // let adminNightModeDisabled = localStorage.getItem('nightModeOverride') === 'true';
 
+    // SHAVUOT: Display special message in announcements box
+    if (isHolidayStayAwake) {
+        EL['ANN'].innerText = "🌸 זמן מתן תורתינו 🌸\nא פרייליכען יום טוב שבועות 🌺";
+        fit(EL['ANN'], 3.8);
+    } else {
+        // Regular announcements (from Google Sheets)
+        if (EL['ANN']) EL['ANN'].innerText = defaultSummerMsg || "";
+        if (EL['ANN']) fit(EL['ANN'], 4.8);
+    }
+
     // RULE 5: Sleep 1–5 AM (unless Shavuot or admin override is active)
     if (!isHolidayStayAwake && h >= 1 && h < 5) {
         $('SLEEP_OVERLAY').style.display = 'block';
@@ -548,8 +558,8 @@ function updateUI() {
         return;
     } else { $('SLEEP_OVERLAY').style.display = 'none'; }
 
-    // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
-    // Flowers only show on Shavuot (when isHolidayStayAwake is true)
+    // ── SHAVUOT FLOWER BORDER (TEST MODE) ──────────────────
+    // TEST: Change 'true' back to 'isHolidayStayAwake' for production
     if (true) {
         document.body.classList.add('shavuot-mode');
     } else {
