@@ -550,11 +550,12 @@ function updateUI() {
 
     // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
     // Flowers only show on Shavuot (when isHolidayStayAwake is true)
-    if (true) {
-        document.body.classList.add('shavuot-mode');
-    } else {
-        document.body.classList.remove('shavuot-mode');
-    }
+// TESTING: Always show flower border
+if (true) {
+    document.body.classList.add('shavuot-mode');
+} else {
+    document.body.classList.remove('shavuot-mode');
+}
 
     // RULE 3: Flip logic
     // rtSecs = Rabbeinu Tam time in seconds — Col W + 2 min (shul minhag)
@@ -597,7 +598,12 @@ function updateUI() {
     let omerKey     = dOmer.omerNum ? String(dOmer.omerNum).trim() : null;
     let summerMsg   = dOmer.clmF || defaultSummerMsg;
 
-    if (isMoledDisplay) {
+    if (isHolidayStayAwake) {
+        // SHAVUOT: Special message with flowers
+        $('O2').innerText = "🌸 זמן מתן תורתינו 🌸\nא פרייליכען יום טוב שבועות 🌺";
+        $('O_BECHINA').style.display = 'none';
+        fit($('O2'), 4.5);
+    } else if (isMoledDisplay) {
         // 1st: Molad display (Shabbat morning 9am-12:30pm only)
         $('O2').innerText = moledText; $('O_BECHINA').style.display = 'none'; fit($('O2'), 4.2);
     } else if (omerKey) {
