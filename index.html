@@ -220,7 +220,7 @@
     align-items: center; justify-content: center;
     padding: 4px 6px; text-align: center; overflow: hidden;
   }
-  #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.2; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; font-size: 3.8vh; }
+  #O2 { color: #1a4a3a; font-weight: 600; line-height: 1.0; width: 96%; display: block; margin: 0 auto; word-wrap: break-word; overflow: hidden; }
   #O_BECHINA { font-size: 3.5vh; color: #1a4a3a; border-top: 1px solid #a0c8c0; padding-top: 2px; margin-top: 4px; width: 90%; overflow: hidden; }
 
   #SLEEP_OVERLAY { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 10000; display: none; }
@@ -537,16 +537,6 @@ function updateUI() {
     // Optional: Admin override via localStorage
     // let adminNightModeDisabled = localStorage.getItem('nightModeOverride') === 'true';
 
-    // SHAVUOT: Display special message in announcements box
-    if (isHolidayStayAwake) {
-        EL['ANN'].innerText = "🌸 זמן מתן תורתינו 🌸\nא פרייליכען יום טוב שבועות 🌺";
-        fit(EL['ANN'], 3.8);
-    } else {
-        // Regular announcements (from Google Sheets)
-        if (EL['ANN']) EL['ANN'].innerText = defaultSummerMsg || "";
-        if (EL['ANN']) fit(EL['ANN'], 4.8);
-    }
-
     // RULE 5: Sleep 1–5 AM (unless Shavuot or admin override is active)
     if (!isHolidayStayAwake && h >= 1 && h < 5) {
         $('SLEEP_OVERLAY').style.display = 'block';
@@ -558,13 +548,14 @@ function updateUI() {
         return;
     } else { $('SLEEP_OVERLAY').style.display = 'none'; }
 
-    // ── SHAVUOT FLOWER BORDER (TEST MODE) ──────────────────
-    // TEST: Change 'true' back to 'isHolidayStayAwake' for production
-    if (isHolidayStayAwake) {
-        document.body.classList.add('shavuot-mode');
-    } else {
-        document.body.classList.remove('shavuot-mode');
-    }
+    // ── SHAVUOT FLOWER BORDER (PRODUCTION MODE) ──────────────────
+    // Flowers only show on Shavuot (when isHolidayStayAwake is true)
+// TESTING: Always show flower border
+if (true) {
+    document.body.classList.add('shavuot-mode');
+} else {
+    document.body.classList.remove('shavuot-mode');
+}
 
     // RULE 3: Flip logic
     // rtSecs = Rabbeinu Tam time in seconds — Col W + 2 min (shul minhag)
@@ -611,7 +602,7 @@ function updateUI() {
         // SHAVUOT: Special message with flowers
         $('O2').innerText = "🌸 זמן מתן תורתינו 🌸\nא פרייליכען יום טוב שבועות 🌺";
         $('O_BECHINA').style.display = 'none';
-        fit($('O2'), 3.5);
+        fit($('O2'), 4.5);
     } else if (isMoledDisplay) {
         // 1st: Molad display (Shabbat morning 9am-12:30pm only)
         $('O2').innerText = moledText; $('O_BECHINA').style.display = 'none'; fit($('O2'), 4.2);
