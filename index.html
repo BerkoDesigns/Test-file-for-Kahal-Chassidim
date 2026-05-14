@@ -457,7 +457,7 @@ function updateUI() {
     
     // TESTING: Force Saturday (6) for Shabbat Mevarchim testing
     // Comment this out when not testing:
-    now.getDay = () => 6;
+    //now.getDay = () => 6;
     
     let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
     let cSec = (h*3600) + (m*60) + s;
