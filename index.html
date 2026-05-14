@@ -517,29 +517,6 @@ function updateUI() {
     let isShabbat   = (now.getDay() === 6);
     let isMoledDisplay = isMoledTime && isShabbat && moledText !== "";
     
-    // ROSH CHODESH: Look ahead for Shabbat Mevarchim
-    let rochDayNames = "";
-    if (isShabbat && holidayText && holidayText.includes("ראש חודש")) {
-        let rochDays = [];
-        for (let i = 1; i <= 8; i++) {
-            let futureDate = new Date(now.getTime() + (i * 86400000));
-            let futureIso = getIso(futureDate);
-            let futureData = schedule[futureIso];
-            if (futureData && futureData.holidayText && futureData.holidayText.includes("ראש חודש")) {
-                rochDays.push(DAY_NAMES[futureDate.getDay()]);
-            }
-        }
-        if (rochDays.length === 1) {
-            rochDayNames = rochDays[0];
-        } else if (rochDays.length === 2) {
-            rochDayNames = rochDays[0] + " ו" + rochDays[1];
-        } else if (rochDays.length > 2) {
-            rochDayNames = rochDays.slice(0, -1).join(", ") + " ו" + rochDays[rochDays.length - 1];
-        }
-        isMoledDisplay = true;
-        moledText = rochDayNames;
-    }
-    
     let omerKey     = dOmer.omerNum ? String(dOmer.omerNum).trim() : null;
 
     if (isHolidayStayAwake) {
@@ -588,9 +565,27 @@ function updateUI() {
             sub = "";
             cls = "teal-box";
         } else if (hText && hText.includes("ראש חודש")) {
-            // ROSH CHODESH on Shabbat
-            head = "שבת ראש חודש";
-            sub = "הלל, יעלה ויבא, אתה יצרת";
+            // SHABBAT MEVARCHIM: Look ahead 8 days for Rosh Chodesh
+            let rochDays = [];
+            for (let i = 1; i <= 8; i++) {
+                let futureDate = new Date(now.getTime() + (i * 86400000));
+                let futureIso = getIso(futureDate);
+                let futureData = schedule[futureIso];
+                if (futureData && futureData.holidayText && futureData.holidayText.includes("ראש חודש")) {
+                    rochDays.push(DAY_NAMES[futureDate.getDay()]);
+                }
+            }
+            // Format day names for display
+            let rochDayNames = "";
+            if (rochDays.length === 1) {
+                rochDayNames = rochDays[0];
+            } else if (rochDays.length === 2) {
+                rochDayNames = rochDays[0] + " ו" + rochDays[1];
+            } else if (rochDays.length > 2) {
+                rochDayNames = rochDays.slice(0, -1).join(", ") + " ו" + rochDays[rochDays.length - 1];
+            }
+            head = "שבת מברכים";
+            sub = rochDayNames;
             cls = "teal-box";
         } else {
             head = "שבת קודש";
