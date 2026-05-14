@@ -539,11 +539,6 @@ function updateUI() {
     // Optional: Admin override via localStorage
     // let adminNightModeDisabled = localStorage.getItem('nightModeOverride') === 'true';
 
-    // SHAVUOT: Display special message in announcements box
-    if (isHolidayStayAwake) {
-        $('ANN').innerText = "🌸 זמן מתן תורתינו 🌸 א פרייליכען יום טוב שבועות 🌺";
-        fit($('ANN'), 3.8);
-    }
 
     // RULE 5: Sleep 1–5 AM (unless Shavuot or admin override is active)
     if (!isHolidayStayAwake && h >= 1 && h < 5) {
@@ -647,9 +642,9 @@ function updateUI() {
         head = hText !== "" ? hText : "מוצאי שבת";
         sub  = hText !== "" ? "ותודיענו" : "אתה חוננתנו";
         if (hText !== "") cls = "teal-box";
-    } else if (isYomTov && isPastRT) {
-        // After RT on Yom Tov day (Col AA = Y) → מוצאי יום טוב
-        head = "מוצאי יום טוב"; sub = ""; cls = "gold-box";
+    } else if (isYomTov) {
+        // Yom Tov day (Col AA = Y) — show the holiday text during the day
+        head = hText || "יום טוב"; sub = tR; cls = "teal-box";
     } else if (hText !== "" && !isPastRT) {
         // Col D text — only before RT
         head = hText; sub = tR; cls = "teal-box";
