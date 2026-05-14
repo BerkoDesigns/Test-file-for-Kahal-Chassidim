@@ -643,8 +643,18 @@ function updateUI() {
         sub  = hText !== "" ? "ותודיענו" : "אתה חוננתנו";
         if (hText !== "") cls = "teal-box";
     } else if (isYomTov) {
-        // Yom Tov day (Col AA = Y) — show the holiday text during the day
-        head = hText || "יום טוב"; sub = tR; cls = "teal-box";
+        // Yom Tov day (Col AA = Y)
+        // BUT: if next day is NOT Yom Tov (Col AA ≠ Y) AND we're past RT, holiday has ended
+        let dNextDay = schedule[getIso(new Date(now.getTime() + 86400000))];
+        let nextDayIsYomTov = dNextDay && (dNextDay.yomtov === "Y");
+        
+        if (!nextDayIsYomTov && isPastRT) {
+            // Holiday ended — show Motzei Yom Tov
+            head = "מוצאי יום טוב"; sub = "אתה חוננתנו"; cls = "gold-box";
+        } else {
+            // Still in holiday — show the text
+            head = hText || "יום טוב"; sub = tR; cls = "teal-box";
+        }
     } else if (hText !== "" && !isPastRT) {
         // Col D text — only before RT
         head = hText; sub = tR; cls = "teal-box";
