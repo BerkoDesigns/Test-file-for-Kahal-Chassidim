@@ -635,10 +635,21 @@ function updateUI() {
 
     let head = "", sub = "", cls = "gold-box";
     if (isShab) {
-        // Shabbos — unchanged
-        head = (moledText && isMoledDisplay) ? "שבת מברכים" : "שבת קודש"; sub = hText;
+        // Shabbos
+        if (isYomTov && hText) {
+            // Shabbat that is also Yom Tov — show both on main line
+            head = "שבת / " + hText;
+            sub = "";
+            cls = "teal-box";
+        } else if (moledText && isMoledDisplay) {
+            head = "שבת מברכים";
+            sub = hText;
+        } else {
+            head = "שבת קודש";
+            sub = hText;
+        }
     } else if (isMotz) {
-        // Motzei Shabbos — unchanged, Col D + ותודיענו or plain
+        // Motzei Shabbos — show Vatodieinu if there's holiday text, otherwise Ata Chonantanu
         head = hText !== "" ? hText : "מוצאי שבת";
         sub  = hText !== "" ? "ותודיענו" : "אתה חוננתנו";
         if (hText !== "") cls = "teal-box";
@@ -661,14 +672,24 @@ function updateUI() {
     } else if (tR !== "" && !isPastRT) {
         // Tachanun override — only before RT
         head = "אין אומרים תחנון"; sub = tR; cls = "teal-box";
-    } else if (dayW === 5 && !isYomTov && !isEsseraBTevet(dDate.heb) && !isPastRT) {
-        // RULE 13: Friday (Erev Shabbat) — אין אומרים תחנון / ערב שבת קודש
-        // Shows until candle lighting OR Rabbeinu Tam, whichever comes first
-        // (unless it's Yom Tov or עשרה בטבת - 10th of Tevet)
-        head = "אין אומרים תחנון"; sub = "ערב שבת קודש"; cls = "teal-box";
     } else {
-        // Default — מוריד הטל / ותן ברכה
-        head = "מוריד הטל"; sub = "ותן ברכה";
+        // Check if yesterday was Yom Tov (for Motzei Yom Tov after midnight)
+        let dYesterday = schedule[getIso(new Date(now.getTime() - 86400000))];
+        let yesterdayWasYomTov = dYesterday && (dYesterday.yomtov === "Y");
+        let yesterdayHText = (dYesterday && dYesterday.holidayText) || "";
+        
+        if (yesterdayWasYomTov && cSec < getSec(dToday.z[0], false)) {
+            // After midnight but before Alos — still in Motzei Yom Tov
+            head = "מוצאי יום טוב"; sub = "אתה חוננתנו"; cls = "gold-box";
+        } else if (dayW === 5 && !isYomTov && !isEsseraBTevet(dDate.heb) && !isPastRT) {
+            // RULE 13: Friday (Erev Shabbat) — אין אומרים תחנון / ערב שבת קודש
+            // Shows until candle lighting OR Rabbeinu Tam, whichever comes first
+            // (unless it's Yom Tov or עשרה בטבת - 10th of Tevet)
+            head = "אין אומרים תחנון"; sub = "ערב שבת קודש"; cls = "teal-box";
+        } else {
+            // Default — מוריד הטל / ותן ברכה
+            head = "מוריד הטל"; sub = "ותן ברכה";
+        }
     }
 
     // RULE 10: Kiddush Levana
