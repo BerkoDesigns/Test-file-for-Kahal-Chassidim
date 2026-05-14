@@ -454,6 +454,11 @@ function rotateP1() {
 // ── MAIN UI UPDATE (ALL RULES) ─────────────────────────────────────────────────────────
 function updateUI() {
     let now = new Date();
+    
+    // TESTING: Force Saturday (6) for Shabbat Mevarchim testing
+    // Comment this out when not testing:
+    now.getDay = () => 6;
+    
     let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
     let cSec = (h*3600) + (m*60) + s;
     let dToday = schedule[getIso(now)]; 
@@ -564,32 +569,38 @@ function updateUI() {
             head = "שבת / " + hText;
             sub = "";
             cls = "teal-box";
-        } else if (hText && hText.includes("ראש חודש")) {
-            // SHABBAT MEVARCHIM: Look ahead 8 days for Rosh Chodesh
+        } else {
+            // Check if this is Shabbat Mevarchim (look ahead for Rosh Chodesh in next 8 days)
             let rochDays = [];
+            let rochText = ""; // Will hold the full holiday text from lookahead
             for (let i = 1; i <= 8; i++) {
                 let futureDate = new Date(now.getTime() + (i * 86400000));
                 let futureIso = getIso(futureDate);
                 let futureData = schedule[futureIso];
                 if (futureData && futureData.holidayText && futureData.holidayText.includes("ראש חודש")) {
                     rochDays.push(DAY_NAMES[futureDate.getDay()]);
+                    if (!rochText) rochText = futureData.holidayText; // Get the full text (e.g., "ראש חודש סיון")
                 }
             }
-            // Format day names for display
-            let rochDayNames = "";
-            if (rochDays.length === 1) {
-                rochDayNames = rochDays[0];
-            } else if (rochDays.length === 2) {
-                rochDayNames = rochDays[0] + " ו" + rochDays[1];
-            } else if (rochDays.length > 2) {
-                rochDayNames = rochDays.slice(0, -1).join(", ") + " ו" + rochDays[rochDays.length - 1];
+            
+            if (rochDays.length > 0) {
+                // This is Shabbat Mevarchim - show "ראש חודש סיון יום ראשון"
+                let rochDisplay = "";
+                if (rochDays.length === 1) {
+                    rochDisplay = rochText + " " + rochDays[0];
+                } else if (rochDays.length === 2) {
+                    rochDisplay = rochText + " " + rochDays[0] + " ו" + rochDays[1];
+                } else {
+                    rochDisplay = rochText + " " + rochDays.slice(0, -1).join(", ") + " ו" + rochDays[rochDays.length - 1];
+                }
+                head = "שבת מברכים";
+                sub = rochDisplay;
+                cls = "teal-box";
+            } else {
+                // Regular Shabbat
+                head = "שבת קודש";
+                sub = hText;
             }
-            head = "שבת מברכים";
-            sub = rochDayNames;
-            cls = "teal-box";
-        } else {
-            head = "שבת קודש";
-            sub = hText;
         }
     } else if (isMotz) {
         // Motzei Shabbat (RULE 9)
